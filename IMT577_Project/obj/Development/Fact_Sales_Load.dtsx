@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="2/12/2017 8:36:28 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="IS-CHKX220-21"
+  DTS:CreatorName="IS-CHKX220-21\iGuest"
+  DTS:DTSID="{F6D3808D-5052-44AC-A571-483FBC3DBB74}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="13.0.2165.0"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="Fact_Sales_Load"
+  DTS:PackageType="5"
+  DTS:VersionBuild="4"
+  DTS:VersionGUID="{DB9DB128-AB99-4D12-8D1A-ADC398DF4C85}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Sales Fact Load"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{22A7C079-B26D-4124-B263-362B3BFBF58A}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Sales Fact Load"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2016; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{025C606C-9EED-454A-BB4D-E3968E1252A7}"
+          SQLTask:SqlStatementSource="MERGE Fact_Sales F1&#xA;USING &#xA;(&#xA;Select [ProductPK],isnull([CustomerPK],-1) as [CustomerPK],isnull([StorePK],-1) as [StorePK],isnull([ResellerPK],-1) as [ResellerPK],isnull([ChannelPK],-1) as [ChannelPK],[DimDateID],[SalesHeaderID],[SalesDetailID],[SalesQuantity],[SalesAmount],[Cost],&#xA;case when [ResellerPK]=-1 then [Price]&#xA;else [WholesalePrice] END as [Price],&#xA;([SalesQuantity]*(case when [ResellerPK]=-1 then [Price]&#xA;else [WholesalePrice] END-[Cost])) as [Profit]&#xA;from&#xA;(Select [SalesHeaderID],[SalesDetailID],[ProductID],[SalesQuantity],[SalesAmount],[ProductPK],[CustomerPK],[StorePK],[ResellerPK],[ChannelPK],[DimDateID]&#xA;from&#xA;(Select [SalesHeaderID],[SalesDetailID],[ProductID],[Date],[SalesQuantity],[SalesAmount],[ProductPK],[CustomerPK],[StorePK],[ResellerPK],[ChannelPK]&#xA;from&#xA;(Select [SalesHeaderID],[SalesDetailID],[ProductID],[ChannelID],[Date],[SalesQuantity],[SalesAmount],[ProductPK],[CustomerPK],[StorePK],[ResellerPK]&#xA;from&#xA;(Select [SalesHeaderID],[SalesDetailID],[ProductID],[ChannelID],[ResellerID],[Date],[SalesQuantity],[SalesAmount],[ProductPK],[CustomerPK],[StorePK]&#xA;from&#xA;(Select [SalesHeaderID],[SalesDetailID],[ProductID],[ChannelID],[StoreID],[ResellerID],[Date],[SalesQuantity],[SalesAmount],[ProductPK],[CustomerPK] &#xA;from&#xA;(Select [SalesHeaderID],[SalesDetailID],[dbo].[Dim_Product].[ProductID],[CustomerID],[ChannelID],[StoreID],[ResellerID],[Date],[SalesQuantity],[SalesAmount],[ProductPK] &#xA;from&#xA;(Select [dbo].[SalesHeader_Staging].[SalesHeaderID],[SalesDetailID],[ProductID],[CustomerID],[ChannelID],[StoreID],[ResellerID],[Date],[SalesQuantity],[SalesAmount] from [dbo].[SalesDetail_Staging] inner join [dbo].[SalesHeader_Staging]&#xA;on [dbo].[SalesDetail_Staging].SalesHeaderID=[dbo].[SalesHeader_Staging].SalesHeaderID)&#xA; as SalesJoined left outer join [dbo].[Dim_Product] on SalesJoined.[ProductID]=[dbo].[Dim_Product].[ProductID])&#xA; as SalesProductJoined left outer join [dbo].[Dim_Customer] on SalesProductJoined.[CustomerID]=[dbo].[Dim_Customer].[CustomerID]) as SalesProductCustomerJoined&#xA; left outer join [dbo].Dim_Store on SalesProductCustomerJoined.StoreID=[dbo].Dim_Store.StoreID) as SalesProductCustomerStoreJoined&#xA; left outer join [dbo].[Dim_Reseller] on SalesProductCustomerStoreJoined.ResellerID=[dbo].[Dim_Reseller].ResellerID) as SalesProductCustomerStoreResellerJoined&#xA; left outer join [dbo].[Dim_Channel] on SalesProductCustomerStoreResellerJoined.ChannelID=[dbo].[Dim_Channel].[ChannelID]) as SalesProductCustomerStoreResellerChannelJoined&#xA; left outer join [dbo].[DimDate] on SalesProductCustomerStoreResellerChannelJoined.Date=[dbo].[DimDate].[FullDate]) as SalesProductCustomerStoreResellerChannelDateJoined&#xA; left outer join [dbo].Product_Staging on SalesProductCustomerStoreResellerChannelDateJoined.ProductID=[dbo].Product_Staging.ProductID&#xA;&#xA;) as S&#xA; on F1.ProductPK=S.ProductPK and F1.CustomerPK=S.CustomerPK and F1.StorePK=S.StorePK and F1.ResellerPK=S.ResellerPK and F1.ChannelPK=S.ChannelPK and F1.DimDateID=S.DimDateID and F1.SalesHeaderID=S.SalesHeaderID and F1.SalesDetailID=S.SalesDetailId&#xA;WHEN NOT MATCHED BY TARGET THEN&#xA;  INSERT ([ProductPK]&#xA;,[CustomerPK]&#xA;,[ChannelPK]&#xA;,[StorePK]&#xA;,[ResellerPK]&#xA;,[DimDateID]&#xA;,[SalesHeaderID]&#xA;,[SalesDetailID]&#xA;,[SalesAmount]&#xA;,[SalesQuantity]&#xA;,[Price]&#xA;,[Cost]&#xA;,[Profit])&#xA;  VALUES (&#xA;  S.[ProductPK]&#xA;,S.[CustomerPK]&#xA;,S.[ChannelPK]&#xA;,S.[StorePK]&#xA;,S.[ResellerPK]&#xA;,S.[DimDateID]&#xA;,S.[SalesHeaderID]&#xA;,S.[SalesDetailID]&#xA;,S.[SalesAmount]&#xA;,S.[SalesQuantity]&#xA;,S.[Price]&#xA;,S.[Cost]&#xA;,S.[Profit]&#xA;  )&#xA; WHEN MATCHED &#xA; then update &#xA; set&#xA;[ProductPK]=S.[ProductPK]&#xA;,[CustomerPK]=S.[CustomerPK]&#xA;,[ChannelPK]=S.[ChannelPK]&#xA;,[StorePK]=S.[StorePK]&#xA;,[ResellerPK]=S.[ResellerPK]&#xA;,[DimDateID]=S.[DimDateID]&#xA;,[SalesHeaderID]=S.[SalesHeaderID]&#xA;,[SalesDetailID]=S.[SalesDetailID]&#xA;,[SalesAmount]=S.[SalesAmount]&#xA;,[SalesQuantity]=S.[SalesQuantity]&#xA;,[Price]=S.[Price]&#xA;,[Cost]=S.[Cost]&#xA;,[Profit]=S.[Profit]&#xA;When not matched by source then delete;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph">
+        <NodeLayout
+          Size="152,42"
+          Id="Package\Sales Fact Load"
+          TopLeft="179.5,104.5" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
